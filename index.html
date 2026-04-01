@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCM Sadang CCL - Fixed Navigation</title>
+    <title>SCM Sadang CCL - Inventory Comparison</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
@@ -23,58 +23,41 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--bg); display: flex; overflow-x: hidden; min-height: 100vh; }
+        body { background-color: var(--bg); display: flex; min-height: 100vh; }
 
         /* SIDEBAR */
         .sidebar { width: var(--sidebar-width); background: var(--primary); height: 100vh; position: fixed; color: white; padding: 20px; z-index: 100; }
-        .sidebar h2 { font-size: 1rem; margin-bottom: 25px; text-align: center; border-bottom: 1px solid #555; padding-bottom: 10px; color: #ecf0f1; }
+        .sidebar h2 { font-size: 1rem; margin-bottom: 25px; text-align: center; border-bottom: 1px solid #555; padding-bottom: 10px; }
         .sidebar-menu { list-style: none; }
         .sidebar-menu li { padding: 12px 15px; cursor: pointer; transition: 0.3s; border-radius: 5px; margin-bottom: 5px; color: #bdc3c7; font-size: 14px; }
         .sidebar-menu li:hover { background: rgba(255,255,255,0.1); color: white; }
         .sidebar-menu li.active { background: var(--accent); color: white; font-weight: bold; }
         
         .submenu { margin-left: 15px; font-size: 13px; list-style: none; padding-top: 5px; }
-        .submenu li { padding: 8px 10px; border-left: 2px solid #555; cursor: pointer; margin-bottom: 2px; }
-        .submenu li:hover { border-left: 2px solid var(--accent); color: white; }
+        .submenu li { padding: 8px 10px; border-left: 2px solid #555; cursor: pointer; }
+        .submenu li.active { border-left: 2px solid white; color: white; font-weight: bold; }
 
         /* MAIN CONTENT */
         .main-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); padding: 30px; }
         .page-section { display: none; }
-        .page-section.active { display: block; animation: fadeIn 0.2s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .page-section.active { display: block; }
 
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
         
-        /* SUMMARY CARDS */
         .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .stat-card { background: var(--white); padding: 20px; border-radius: 8px; border-left: 5px solid var(--accent); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .stat-card h3 { font-size: 0.8rem; color: #7f8c8d; text-transform: uppercase; }
-        .stat-card p { font-size: 1.5rem; font-weight: bold; margin-top: 5px; }
 
-        .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
-        .chart-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); height: 350px; }
+        .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .chart-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); height: 400px; }
 
-        /* TABLES */
         .section-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        
         .btn-add { background: var(--success); color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .btn-save-all { background: var(--accent); color: white; padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 20px; }
-        .btn-delete { background: var(--danger); color: white; padding: 3px 8px; border: none; border-radius: 4px; cursor: pointer; }
 
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 1000px; }
-        th { background: #f8f9fa; padding: 12px 10px; text-align: left; border-bottom: 2px solid #dee2e6; color: #333; }
-        td { padding: 10px; border-bottom: 1px solid #eee; }
-
-        input, select { width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px; }
-        
-        .status-select { font-weight: bold; color: white !important; text-align: center; border: none; cursor: pointer; }
-        .bg-ready { background-color: var(--success) !important; }
-        .bg-not-ready { background-color: var(--danger) !important; }
-        
-        .progress-bar-bg { background: #eee; border-radius: 10px; height: 8px; width: 100%; margin-top: 5px; }
-        .progress-bar-fill { background: var(--success); height: 100%; border-radius: 10px; transition: 0.3s; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        th { background: #f8f9fa; padding: 12px 10px; text-align: left; border-bottom: 2px solid #dee2e6; }
+        td { padding: 8px; border-bottom: 1px solid #eee; }
+        input { width: 100%; padding: 5px; border: 1px solid #ddd; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -85,10 +68,10 @@
             <li class="nav-item active" onclick="showPage('dashboard', this)">Dashboard Summary</li>
             <li class="nav-item" onclick="showPage('sales-order', this)">Sales Order</li>
             <li>
-                <span style="padding-left:15px; font-size:12px; color:#7f8c8d; font-weight:bold;">MATERIAL REQUIREMENT</span>
+                <span style="padding-left:15px; font-size:11px; color:#7f8c8d;">INVENTORY CONTROL</span>
                 <ul class="submenu">
-                    <li onclick="showPage('paint-feed', this)">• Paint Feed</li>
-                    <li onclick="showPage('cat', this)">• Cat</li>
+                    <li onclick="showPage('paint-feed', this)">• Paint Feed Stock</li>
+                    <li onclick="showPage('cat', this)">• Cat Stock</li>
                 </ul>
             </li>
             <li class="nav-item" onclick="showPage('prod-planning', this)">Production Planning</li>
@@ -104,8 +87,8 @@
         <div id="dashboard" class="page-section active">
             <div class="summary-grid">
                 <div class="stat-card"><h3>Total Tonase SO</h3><p id="dash-so">0 T</p></div>
-                <div class="stat-card" style="border-left-color: #e67e22;"><h3>To Be Produce (TBP)</h3><p id="dash-tbp">0 T</p></div>
-                <div class="stat-card" style="border-left-color: #9b59b6;"><h3>Active Products</h3><p id="dash-active">0</p></div>
+                <div class="stat-card" style="border-left-color: #e67e22;"><h3>To Be Produce</h3><p id="dash-tbp">0 T</p></div>
+                <div class="stat-card" style="border-left-color: #9b59b6;"><h3>Active Items</h3><p id="dash-active">0</p></div>
             </div>
             <div class="chart-grid">
                 <div class="chart-box"><canvas id="pfChart"></canvas></div>
@@ -115,76 +98,59 @@
 
         <div id="sales-order" class="page-section">
             <div class="section-card">
-                <div class="section-header">
-                    <h2>Sales Order Management</h2>
-                    <button class="btn-add" onclick="addRow('so-body')">+ Add New SO</button>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>No. SO</th><th>Customer</th><th>Category</th><th>Thk</th><th>Width</th><th>AZ</th><th>Grade</th><th>PF Name</th><th>Warna Cat</th>
-                                <th>Qty(T)</th><th>PF Stat</th><th>Paint Stat</th><th>Real</th><th>TBP</th><th>Prog</th><th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="so-body"></tbody>
-                    </table>
-                </div>
-                <button class="btn-save-all" onclick="saveToFirebase()">SINKRONISASI KE CLOUD</button>
+                <div class="header-top"><h2>Sales Order</h2><button class="btn-add" onclick="addRow('so-body')">+ Add SO</button></div>
+                <table style="min-width: 1200px;">
+                    <thead>
+                        <tr><th>No. SO</th><th>Customer</th><th>PF Name</th><th>Warna Cat</th><th>Qty(T)</th><th>Real</th><th>TBP</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="so-body"></tbody>
+                </table>
+                <button class="btn-save-all" onclick="saveToFirebase()">SINKRONISASI DATA</button>
             </div>
         </div>
 
         <div id="paint-feed" class="page-section">
             <div class="section-card">
-                <div class="section-header"><h2>Paint Feed Inventory Requirement</h2></div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>PF Name (Spesifikasi)</th><th>Requirement (TBP)</th><th>Stock CCL</th><th>Stock CGL</th><th>Balance</th></tr>
-                        </thead>
-                        <tbody id="pf-body"></tbody>
-                    </table>
-                </div>
+                <h2>Paint Feed Stock Input</h2>
+                <p style="font-size: 12px; color: #666; margin-bottom: 10px;">*Masukkan stok fisik untuk dibandingkan di Dashboard</p>
+                <table>
+                    <thead>
+                        <tr><th>PF Name</th><th>Req (TBP)</th><th>Stock CCL (T)</th><th>Stock CGL (T)</th><th>Shortage</th></tr>
+                    </thead>
+                    <tbody id="pf-body"></tbody>
+                </table>
+                <button class="btn-save-all" onclick="saveToFirebase()">SIMPAN DATA STOK</button>
             </div>
         </div>
 
         <div id="cat" class="page-section">
             <div class="section-card">
-                <div class="section-header"><h2>Cat Requirement & PO Control</h2></div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>Nama/Warna Cat</th><th>Requirement (TBP)</th><th>Stock Cat</th><th>PO Cat</th><th>Shortage</th></tr>
-                        </thead>
-                        <tbody id="cat-body"></tbody>
-                    </table>
-                </div>
+                <h2>Cat Stock & PO Input</h2>
+                <table>
+                    <thead>
+                        <tr><th>Warna Cat</th><th>Req (TBP)</th><th>Stock (T)</th><th>PO (T)</th><th>Shortage</th></tr>
+                    </thead>
+                    <tbody id="cat-body"></tbody>
+                </table>
+                <button class="btn-save-all" onclick="saveToFirebase()">SIMPAN DATA STOK</button>
             </div>
         </div>
 
         <div id="prod-planning" class="page-section">
             <div class="section-card">
-                <div class="section-header">
-                    <h2>Production Planning Schedule</h2>
-                    <button class="btn-add" onclick="addRow('pp-body')">+ Add Plan</button>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Tgl Prod</th><th>No SO</th><th>Customer</th><th>Product</th><th>Plan(T)</th><th>PF Stat</th><th>Paint Stat</th><th>Status</th><th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="pp-body"></tbody>
-                    </table>
-                </div>
-                <button class="btn-save-all" onclick="saveToFirebase()">SINKRONISASI KE CLOUD</button>
+                <div class="header-top"><h2>Production Planning</h2><button class="btn-add" onclick="addRow('pp-body')">+ Add Plan</button></div>
+                <table>
+                    <thead>
+                        <tr><th>Tgl</th><th>No SO</th><th>Customer</th><th>Product</th><th>Plan(T)</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="pp-body"></tbody>
+                </table>
+                <button class="btn-save-all" onclick="saveToFirebase()">SINKRONISASI DATA</button>
             </div>
         </div>
     </main>
 
     <script>
-        // --- FIREBASE CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyAAyKa05_9TfbyeEhPhR1wm_7fxYICmB7c",
             authDomain: "scm-sadang.firebaseapp.com",
@@ -194,212 +160,190 @@
             messagingSenderId: "615148090923",
             appId: "1:615148090923:web:572393d6e10e7f85a15c6e"
         };
-
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-
         let pfChart, catChart;
 
-        // --- NAVIGATION LOGIC ---
         function showPage(pageId, element) {
-            // Sembunyikan semua section
-            document.querySelectorAll('.page-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Tampilkan section yang dipilih
-            const targetSection = document.getElementById(pageId);
-            if (targetSection) {
-                targetSection.classList.add('active');
-            }
-
-            // Update status 'active' di sidebar
-            document.querySelectorAll('.nav-item, .submenu li').forEach(item => {
-                item.classList.remove('active');
-            });
-            if (element) {
-                element.classList.add('active');
-            }
-
-            // Update judul header
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.querySelectorAll('.nav-item, .submenu li').forEach(i => i.classList.remove('active'));
+            if(element) element.classList.add('active');
             document.getElementById('page-title').innerText = pageId.replace('-', ' ').toUpperCase();
-        }
-
-        // --- TABLE LOGIC ---
-        function autoPF(input) {
-            const row = input.closest('tr');
-            const thk = row.querySelector('.in-thk')?.value || "0";
-            const wth = row.querySelector('.in-wth')?.value || "0";
-            const az = row.querySelector('.in-az')?.value || "";
-            const grd = row.querySelector('.in-grd')?.value || "";
-            const pfField = row.querySelector('.pf-name-auto');
-            if(pfField) pfField.value = `${thk}x${wth} ${az} ${grd}`;
-        }
-
-        function calculateRow(input) {
-            const row = input.closest('tr');
-            const qty = parseFloat(row.querySelector('.qty')?.value) || 0;
-            const real = parseFloat(row.querySelector('.real')?.value) || 0;
-            const tbp = Math.max(0, qty - real);
-            const percent = qty > 0 ? Math.min(100, Math.round((real/qty)*100)) : 0;
-
-            const tbpCell = row.querySelector('.tbp-val');
-            const progCell = row.querySelector('.prog-cell');
-            if(tbpCell) tbpCell.innerText = tbp.toFixed(1);
-            if(progCell) progCell.innerHTML = `${percent}% <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${percent}%"></div></div>`;
         }
 
         function addRow(targetId, data = null) {
             const tbody = document.getElementById(targetId);
             const row = tbody.insertRow();
-            
             if(targetId === 'so-body') {
                 row.innerHTML = `
-                    <td><input type="text" class="no-so" value="${data?.noSo || ''}"></td>
-                    <td><input type="text" class="cust" value="${data?.cust || ''}"></td>
-                    <td><select class="cat"><option ${data?.cat=='Domestic'?'selected':''}>Domestic</option><option ${data?.cat=='Export'?'selected':''}>Export</option></select></td>
-                    <td><input type="number" step="0.01" class="in-thk" value="${data?.thk || 0.30}" oninput="autoPF(this)"></td>
-                    <td><input type="number" class="in-wth" value="${data?.wth || 1219}" oninput="autoPF(this)"></td>
-                    <td><input type="text" class="in-az" value="${data?.az || 'AZ100'}" oninput="autoPF(this)"></td>
-                    <td><input type="text" class="in-grd" value="${data?.grd || 'G550'}" oninput="autoPF(this)"></td>
-                    <td><input type="text" class="pf-name-auto" value="${data?.pfName || ''}" readonly></td>
-                    <td><input type="text" class="c-color" value="${data?.color || ''}"></td>
-                    <td><input type="number" class="qty" value="${data?.qty || 0}" oninput="calculateRow(this)"></td>
-                    <td><select class="status-select ${data?.pStat=='Ready'?'bg-ready':'bg-not-ready'}" onchange="updateColor(this)"><option ${data?.pStat=='Ready'?'selected':''}>Ready</option><option ${data?.pStat!='Ready'?'selected':''}>Not Ready</option></select></td>
-                    <td><select class="status-select ${data?.cStat=='Ready'?'bg-ready':'bg-not-ready'}" onchange="updateColor(this)"><option ${data?.cStat=='Ready'?'selected':''}>Ready</option><option ${data?.cStat!='Ready'?'selected':''}>Not Ready</option></select></td>
-                    <td><input type="number" class="real" value="${data?.real || 0}" oninput="calculateRow(this)"></td>
-                    <td class="tbp-val">0</td><td class="prog-cell">0%</td>
-                    <td><button class="btn-delete" onclick="this.closest('tr').remove()">✖</button></td>
+                    <td><input type="text" class="no-so" value="${data?.noSo||''}"></td>
+                    <td><input type="text" class="cust" value="${data?.cust||''}"></td>
+                    <td><input type="text" class="pf-name" value="${data?.pfName||''}"></td>
+                    <td><input type="text" class="color" value="${data?.color||''}"></td>
+                    <td><input type="number" class="qty" value="${data?.qty||0}" oninput="calcTBP(this)"></td>
+                    <td><input type="number" class="real" value="${data?.real||0}" oninput="calcTBP(this)"></td>
+                    <td class="tbp-val">0</td>
+                    <td><button onclick="this.closest('tr').remove()">✖</button></td>
                 `;
-                autoPF(row.querySelector('.in-thk'));
-                calculateRow(row.querySelector('.qty'));
-            } else if (targetId === 'pp-body') {
+                calcTBP(row.querySelector('.qty'));
+            } else if(targetId === 'pp-body') {
                 row.innerHTML = `
-                    <td><input type="date" class="pp-date" value="${data?.date || ''}"></td>
-                    <td><input type="text" class="pp-so" value="${data?.noSo || ''}"></td>
-                    <td><input type="text" class="pp-cust" value="${data?.cust || ''}"></td>
-                    <td><input type="text" class="pp-prod" value="${data?.prod || ''}"></td>
-                    <td><input type="number" class="pp-plan" value="${data?.plan || 0}"></td>
-                    <td><select class="status-select bg-not-ready" onchange="updateColor(this)"><option>Ready</option><option selected>Not Ready</option></select></td>
-                    <td><select class="status-select bg-not-ready" onchange="updateColor(this)"><option>Ready</option><option selected>Not Ready</option></select></td>
-                    <td><select><option>Scheduled</option><option>Running</option><option>Done</option></select></td>
-                    <td><button class="btn-delete" onclick="this.closest('tr').remove()">✖</button></td>
+                    <td><input type="date" class="pp-date" value="${data?.date||''}"></td>
+                    <td><input type="text" class="pp-so" value="${data?.noSo||''}"></td>
+                    <td><input type="text" class="pp-cust" value="${data?.cust||''}"></td>
+                    <td><input type="text" class="pp-prod" value="${data?.prod||''}"></td>
+                    <td><input type="number" class="pp-plan" value="${data?.plan||0}"></td>
+                    <td><button onclick="this.closest('tr').remove()">✖</button></td>
                 `;
             }
         }
 
-        function updateColor(sel) {
-            sel.className = 'status-select ' + (sel.value === 'Ready' ? 'bg-ready' : 'bg-not-ready');
+        function calcTBP(input) {
+            const row = input.closest('tr');
+            const qty = parseFloat(row.querySelector('.qty').value) || 0;
+            const real = parseFloat(row.querySelector('.real').value) || 0;
+            row.querySelector('.tbp-val').innerText = (qty - real).toFixed(1);
         }
 
-        // --- CLOUD SYNC ---
         function saveToFirebase() {
-            const soData = [];
+            const so = [];
             document.querySelectorAll('#so-body tr').forEach(r => {
-                soData.push({
+                so.push({
                     noSo: r.querySelector('.no-so').value,
                     cust: r.querySelector('.cust').value,
-                    cat: r.querySelector('.cat').value,
-                    thk: r.querySelector('.in-thk').value,
-                    wth: r.querySelector('.in-wth').value,
-                    az: r.querySelector('.in-az').value,
-                    grd: r.querySelector('.in-grd').value,
-                    pfName: r.querySelector('.pf-name-auto').value,
-                    color: r.querySelector('.c-color').value,
-                    qty: parseFloat(r.querySelector('.qty').value) || 0,
-                    pStat: r.querySelectorAll('.status-select')[0].value,
-                    cStat: r.querySelectorAll('.status-select')[1].value,
-                    real: parseFloat(r.querySelector('.real').value) || 0
+                    pfName: r.querySelector('.pf-name').value,
+                    color: r.querySelector('.color').value,
+                    qty: parseFloat(r.querySelector('.qty').value)||0,
+                    real: parseFloat(r.querySelector('.real').value)||0
                 });
             });
 
-            const ppData = [];
+            const stocks = { pf: {}, cat: {} };
+            document.querySelectorAll('#pf-body tr').forEach(r => {
+                const name = r.cells[0].innerText;
+                stocks.pf[name] = { 
+                    ccl: parseFloat(r.querySelector('.s-ccl').value)||0, 
+                    cgl: parseFloat(r.querySelector('.s-cgl').value)||0 
+                };
+            });
+            document.querySelectorAll('#cat-body tr').forEach(r => {
+                const name = r.cells[0].innerText;
+                stocks.cat[name] = { 
+                    stock: parseFloat(r.querySelector('.s-cat').value)||0, 
+                    po: parseFloat(r.querySelector('.s-po').value)||0 
+                };
+            });
+
+            const pp = [];
             document.querySelectorAll('#pp-body tr').forEach(r => {
-                ppData.push({
-                    date: r.querySelector('.pp-date').value,
-                    noSo: r.querySelector('.pp-so').value,
-                    cust: r.querySelector('.pp-cust').value,
-                    prod: r.querySelector('.pp-prod').value,
-                    plan: r.querySelector('.pp-plan').value
-                });
+                pp.push({ date: r.querySelector('.pp-date').value, noSo: r.querySelector('.pp-so').value, cust: r.querySelector('.pp-cust').value, prod: r.querySelector('.pp-prod').value, plan: r.querySelector('.pp-plan').value });
             });
 
-            db.ref('scm_v4').set({ salesOrder: soData, productionPlanning: ppData })
-                .then(() => alert("Data Cloud Berhasil Disimpan!"))
-                .catch(e => alert("Gagal: " + e.message));
+            db.ref('scm_v5').set({ salesOrder: so, stocks: stocks, productionPlanning: pp })
+                .then(() => alert("Data Tersimpan!"));
         }
 
-        // --- REALTIME DATA LISTENER ---
-        db.ref('scm_v4').on('value', (snap) => {
+        db.ref('scm_v5').on('value', snap => {
             const val = snap.val() || {};
             const soData = val.salesOrder || [];
-            const ppData = val.productionPlanning || [];
+            const stockData = val.stocks || { pf: {}, cat: {} };
+            
+            document.getElementById('so-body').innerHTML = '';
+            document.getElementById('pp-body').innerHTML = '';
+            (val.productionPlanning || []).forEach(p => addRow('pp-body', p));
 
-            const soBody = document.getElementById('so-body');
-            const ppBody = document.getElementById('pp-body');
-            soBody.innerHTML = '';
-            ppBody.innerHTML = '';
-
-            let totalSO = 0, totalTBP = 0, activeProd = 0;
-            const pfMap = {};
-            const catMap = {};
-
-            soData.forEach(item => {
-                addRow('so-body', item);
-                totalSO += item.qty;
-                let tbp = Math.max(0, item.qty - item.real);
-                totalTBP += tbp;
+            let tSO = 0, tTBP = 0, pfMap = {}, catMap = {};
+            soData.forEach(s => {
+                addRow('so-body', s);
+                tSO += s.qty;
+                let tbp = s.qty - s.real;
+                tTBP += tbp;
                 if(tbp > 0) {
-                    activeProd++;
-                    if(item.pfName) pfMap[item.pfName] = (pfMap[item.pfName] || 0) + tbp;
-                    if(item.color) catMap[item.color] = (catMap[item.color] || 0) + tbp;
+                    pfMap[s.pfName] = (pfMap[s.pfName] || 0) + tbp;
+                    catMap[s.color] = (catMap[s.color] || 0) + tbp;
                 }
             });
 
-            ppData.forEach(item => addRow('pp-body', item));
+            document.getElementById('dash-so').innerText = tSO.toFixed(1) + ' T';
+            document.getElementById('dash-tbp').innerText = tTBP.toFixed(1) + ' T';
+            document.getElementById('dash-active').innerText = Object.keys(pfMap).length;
 
-            document.getElementById('dash-so').innerText = totalSO.toFixed(1) + ' T';
-            document.getElementById('dash-tbp').innerText = totalTBP.toFixed(1) + ' T';
-            document.getElementById('dash-active').innerText = activeProd;
-
-            updateInventoryTables(pfMap, catMap);
+            renderInventory(pfMap, catMap, stockData);
         });
 
-        function updateInventoryTables(pfMap, catMap) {
-            const pfBody = document.getElementById('pf-body');
-            const catBody = document.getElementById('cat-body');
-            pfBody.innerHTML = '';
-            catBody.innerHTML = '';
+        function renderInventory(pfMap, catMap, stockData) {
+            const pfb = document.getElementById('pf-body');
+            const ctb = document.getElementById('cat-body');
+            pfb.innerHTML = ''; ctb.innerHTML = '';
 
-            let pfLabels = [], pfVals = [];
+            let pfLabels = [], pfReq = [], pfStock = [];
             for(let k in pfMap) {
-                pfLabels.push(k); pfVals.push(pfMap[k]);
-                pfBody.innerHTML += `<tr><td>${k}</td><td>${pfMap[k].toFixed(1)}</td><td>0</td><td>0</td><td style="color:red">-${pfMap[k].toFixed(1)}</td></tr>`;
+                let s = stockData.pf?.[k] || { ccl: 0, cgl: 0 };
+                let totalS = s.ccl + s.cgl;
+                pfLabels.push(k); pfReq.push(pfMap[k]); pfStock.push(totalS);
+                pfb.innerHTML += `<tr><td>${k}</td><td>${pfMap[k].toFixed(1)}</td>
+                    <td><input type="number" class="s-ccl" value="${s.ccl}"></td>
+                    <td><input type="number" class="s-cgl" value="${s.cgl}"></td>
+                    <td style="color:${totalS < pfMap[k] ? 'red' : 'green'}">${(totalS - pfMap[k]).toFixed(1)}</td></tr>`;
             }
 
-            let catLabels = [], catVals = [];
-            for(let c in catMap) {
-                catLabels.push(c); catVals.push(catMap[c]);
-                catBody.innerHTML += `<tr><td>${c}</td><td>${catMap[c].toFixed(1)}</td><td>0</td><td>0</td><td style="color:red">-${catMap[c].toFixed(1)}</td></tr>`;
+            let catLabels = [], catReq = [], catStock = [];
+            for(let k in catMap) {
+                let s = stockData.cat?.[k] || { stock: 0, po: 0 };
+                let totalS = s.stock + s.po;
+                catLabels.push(k); catReq.push(catMap[k]); catStock.push(totalS);
+                ctb.innerHTML += `<tr><td>${k}</td><td>${catMap[k].toFixed(1)}</td>
+                    <td><input type="number" class="s-cat" value="${s.stock}"></td>
+                    <td><input type="number" class="s-po" value="${s.po}"></td>
+                    <td style="color:${totalS < catMap[k] ? 'red' : 'green'}">${(totalS - catMap[k]).toFixed(1)}</td></tr>`;
             }
 
-            if(pfChart) { pfChart.data.labels = pfLabels; pfChart.data.datasets[0].data = pfVals; pfChart.update(); }
-            if(catChart) { catChart.data.labels = catLabels; catChart.data.datasets[0].data = catVals; catChart.update(); }
+            updateCharts(pfLabels, pfReq, pfStock, catLabels, catReq, catStock);
+        }
+
+        function updateCharts(pfL, pfR, pfS, catL, catR, catS) {
+            pfChart.data.labels = pfL;
+            pfChart.data.datasets[0].data = pfR;
+            pfChart.data.datasets[1].data = pfS;
+            pfChart.update();
+
+            catChart.data.labels = catL;
+            catChart.data.datasets[0].data = catR;
+            catChart.data.datasets[1].data = catS;
+            catChart.update();
         }
 
         window.onload = function() {
             document.getElementById('current-date').innerText = new Date().toLocaleDateString('id-ID', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
             
+            const commonOptions = { 
+                maintainAspectRatio: false, 
+                scales: { y: { beginAtZero: true, title: { display: true, text: 'Tonase (T)' } } } 
+            };
+
             pfChart = new Chart(document.getElementById('pfChart'), {
                 type: 'bar',
-                data: { labels: [], datasets: [{ label: 'PF Requirement (Ton)', data: [], backgroundColor: '#3498db' }] },
-                options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'Kebutuhan PF', data: [], backgroundColor: '#3498db' },
+                        { label: 'Total Stok (CCL+CGL)', data: [], backgroundColor: '#2ecc71' }
+                    ]
+                },
+                options: commonOptions
             });
 
             catChart = new Chart(document.getElementById('catChart'), {
                 type: 'bar',
-                data: { labels: [], datasets: [{ label: 'Cat Requirement (Ton)', data: [], backgroundColor: '#f1c40f' }] },
-                options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'Kebutuhan Cat', data: [], backgroundColor: '#f1c40f' },
+                        { label: 'Total (Stock+PO)', data: [], backgroundColor: '#e67e22' }
+                    ]
+                },
+                options: commonOptions
             });
         };
     </script>
